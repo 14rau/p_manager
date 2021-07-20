@@ -1,0 +1,24 @@
+{
+   "type": "mysql",
+   "host": "127.0.0.1",
+   "port": 3306,
+   "username": "root",
+   "password": "root",
+   "database": "p_manager_dev",
+   "synchronize": false,
+   "logging": false,
+   "entities": [
+      "build/db/entity/**/*.js"
+   ],
+   "migrations": [
+      "build/db/migration/**/*.js"
+   ],
+   "subscribers": [
+      "build/db/subscriber/**/*.js"
+   ],
+   "cli": {
+      "entitiesDir": "build/db/entity",
+      "migrationsDir": "build/db/migration",
+      "subscribersDir": "build/db/subscriber"
+   }
+}
