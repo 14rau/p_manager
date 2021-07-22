@@ -1,4 +1,4 @@
-import { computed, observable } from "mobx";
+import { autorun, computed, observable } from "mobx";
 import * as React from "react";
 import { ApiClient } from "./ApiClient";
 
@@ -6,7 +6,7 @@ export const appStateCtx = React.createContext<AppState>(null)
 
 export class AppState {
     @observable
-    private session: string;
+    public session: string;
 
     @observable
     public passwords: any[];
@@ -18,8 +18,14 @@ export class AppState {
 
     constructor() {
         this.session = localStorage.getItem("session");
+        autorun(() => {
+            this.session;
+            if(this.session) {
+                setTimeout(() => this.loadPasswords(), 1000);
+            }
+        });
     }
-    public api = new ApiClient();
+    public api = new ApiClient(this);
 
     public setSession(session: string): void {
         localStorage.setItem("session", session)

@@ -25,7 +25,7 @@ createConnection({...dbConf,
     // create express app
     const app = express();
     app.use(bodyParser.json());
-    const protectedRoutes = [ "/passwords", "/passwords/" ];
+    const publicRoutes = [ "/register", "/login" ];
 
 
 
@@ -39,15 +39,13 @@ createConnection({...dbConf,
     }));
 
     async function checkUser(req, res, next) {
-        console.log(req.path);
-        if(!protectedRoutes.includes(req.path)) return next();
+        if(publicRoutes.includes(req.path)) return next();
         const sessionKey = req.get("session");
         const session = await connection.getRepository(Session).findOne({
             where: {
                 session: sessionKey,
             }
         });
-        console.log("session check");
         if(!session) return res.status(403).send();
         res.locals.session = session;
         next();

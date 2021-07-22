@@ -33,11 +33,11 @@ export class PasswordController {
         return this.passwords.save(password);
     }
 
-    public async removePassword(request: Request<{ application: string }, {}, {}>, response: Response<any, {session: Session}>, next: NextFunction) {
+    public async removePassword(request: Request<{ id: number }, {}, {}>, response: Response<any, {session: Session}>, next: NextFunction) {
         let password = await this.passwords.findOne({
             where: {
                 user_id: response.locals.session.user_id,
-                application: request.params.application
+                id: request.params.id
             }
         });
 

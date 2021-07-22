@@ -40,6 +40,7 @@ import { AppState, appStateCtx } from './App/lib/AppState';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine-dark.css';
+import { Toaster } from 'react-hot-toast';
 
 
 
@@ -48,6 +49,7 @@ ReactDOM.render(
     <appStateCtx.Provider value={new AppState()}>
         <ThemeProvider theme={ThemeDark}>
             <AppWrapper>
+                <Toaster/>
                 <App/>
             </AppWrapper>
         </ThemeProvider>

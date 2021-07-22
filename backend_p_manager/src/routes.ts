@@ -21,4 +21,9 @@ export const Routes = [{
     route: "/passwords",
     controller: PasswordController,
     action: "updatePassword"
+}, {
+    method: "delete",
+    route: "/passwords/:id",
+    controller: PasswordController,
+    action: "removePassword"
 }];

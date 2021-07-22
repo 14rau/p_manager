@@ -3,7 +3,6 @@ import { Sizes, ThemeColors } from "../theme/Theme";
 import Color from "color";
 
 export const Button = styled.button<{ variant?: ThemeColors, inverse?: boolean, size?: Sizes, fullWidth?: boolean }>`
-  font-size: 1em;
   padding: 0.25em 1em;
   border-radius: 3px;
   cursor: pointer;

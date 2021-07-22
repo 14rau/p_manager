@@ -5,9 +5,11 @@ import { appStateCtx } from "./lib/AppState";
 import { observer } from "mobx-react";
 import styled from "styled-components";
 import {AgGridColumn, AgGridReact} from 'ag-grid-react';
-import { LogOut, Minus, Plus } from "react-feather";
+import { Clipboard, LogOut, Minus, Plus, Trash } from "react-feather";
 import { Button, Input } from "./components";
 import { Formik } from "formik";
+import { clipboard } from "electron";
+import toast from "react-hot-toast";
 
 export const App: React.FC = observer(function App(){
     const app = React.useContext(appStateCtx);
@@ -48,15 +50,11 @@ export const InnerApp: React.FC = observer(function InnerApp(){
 
     const [ showForm, setShowForm ] = React.useState(false);
 
-    React.useEffect(() => {
-        app.loadPasswords();
-    }, []);
-
     return <div>
        <div style={{ display: "flex", overflow: "hidden" }}>
             <Content>
                 <div>
-                    <Button size="x0" variant="danger">
+                    <Button onClick={() => app.setSession("")} size="x0" variant="danger">
                         <LogOut/>
                     </Button>
                     <Button variant="success" size="x0" onClick={() => setShowForm(e => !e)}>
@@ -65,19 +63,42 @@ export const InnerApp: React.FC = observer(function InnerApp(){
                 </div>
                 <div style={{ height: "100%" }} className="ag-theme-alpine-dark">
                     <AgGridReact
+                        defaultColDef={{
+                            resizable: true,
+                        }}
                         onCellValueChanged={async e => {
                             await app.api.updatePassword({ password: e.data.password, login_name: e.data.login_name, application: e.data.application })
                         }}
                         rowData={app.passwords}
                         frameworkComponents={{
                             "password": function password(params) {
-                                return <BluryTitle>{params.value}</BluryTitle>
-                            }
+                                return <div style={{ display: "flex" }}><BluryTitle>{params.value}</BluryTitle>&nbsp;<Button size="x0" onClick={() => {
+                                    clipboard.writeText(params.value)
+                                    toast("Passwort kopiert!");
+                                }}><Clipboard size={16}/></Button></div>
+                            },
+                            "name": function name(params) {
+                                return <div style={{ display: "flex" }}>
+                                    <div style={{ flex: "1 1 80%" }}>{params.value}</div>&nbsp;
+                                    <Button size="x0" onClick={() => {
+                                        clipboard.writeText(params.value);
+                                        toast("Name kopiert!");
+                                    }}><Clipboard size={16}/></Button>
+                                </div>
+                            },
+                            "Delete": function Delete(params) {
+                                return <Button inverse size="x0" onClick={async () => {
+                                        await app.api.delete({ id: params.data.id });
+                                        app.loadPasswords();
+                                    }}><Trash size={16}/></Button>
+                                
+                            },
                         }}
                     >
+                        <AgGridColumn cellRenderer="Delete" field="id" headerName=""/>
                         <AgGridColumn cellRenderer="app" field="application" headerName="Webseite"/>
                         <AgGridColumn editable cellRenderer="password" field="password" headerName="Passwort"/>
-                        <AgGridColumn editable field="login_name" headerName="Name"/>
+                        <AgGridColumn flex={1} cellRenderer="name" editable field="login_name" headerName="Name"/>
                     </AgGridReact>
                 </div>
             </Content>
@@ -128,4 +149,5 @@ transition: .3s;
 :hover {
 	filter: blur(0px);
 }
+flex: 1 1 80%;
 `;

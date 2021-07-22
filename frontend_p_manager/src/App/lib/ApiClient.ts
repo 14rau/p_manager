@@ -1,13 +1,14 @@
 import axios, { AxiosInstance } from "axios";
+import { AppState } from "./AppState";
 
 export class ApiClient {
     private instance: AxiosInstance;
-    constructor() {
+    constructor(private app: AppState) {
         this.instance = axios.create({
-            baseURL: 'http://localhost:3001',
+            baseURL: 'http://192.168.2.111:3001',
             timeout: 1000,
             headers: {
-                'session': localStorage.getItem("session"),
+                'session': this.app.session,
                 "content-type": "application/json",
                 "Content-Security-Policy": "default-src * 'unsafe-inline' 'unsafe-eval'; script-src * 'unsafe-inline' 'unsafe-eval'; connect-src * 'unsafe-inline'; img-src * data: blob: 'unsafe-inline'; frame-src *; style-src * 'unsafe-inline';"
             },
@@ -24,6 +25,10 @@ export class ApiClient {
         return (await this.instance.post("/login", {
             ...options
         })).data;
+    }
+
+    public async delete(options: { id: string }) {
+        return (await this.instance.delete(`/passwords/${options.id}`)).data;
     }
 
     public async getPasswords() {
