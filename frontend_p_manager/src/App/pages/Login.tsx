@@ -1,9 +1,9 @@
 import { observer } from "mobx-react";
 import * as React from "react";
-import { Pane } from "../../components/Pane";
-import { Button, Input } from "../../components";
+import { Pane } from "../components/Pane";
+import { Button, Input } from "../components";
 import { Eye } from "react-feather";
-import { appStateCtx } from "../../lib/AppState";
+import { appStateCtx } from "../lib/AppState";
 
 
 
