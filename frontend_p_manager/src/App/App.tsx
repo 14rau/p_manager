@@ -5,7 +5,7 @@ import { appStateCtx } from "./lib/AppState";
 import { observer } from "mobx-react";
 import styled from "styled-components";
 import {AgGridColumn, AgGridReact} from 'ag-grid-react';
-import { Clipboard, LogOut, Minus, Plus, Trash } from "react-feather";
+import { Clipboard, LogOut, Minus, Plus, Shuffle, Trash } from "react-feather";
 import { Button, Input } from "./components";
 import { Formik } from "formik";
 import { clipboard } from "electron";
@@ -132,14 +132,33 @@ const PasswordForm: React.FC<{onClose: () => void}> = ({ onClose }) => {
     >
         {formik => <>
             <label>Webseite</label>
-            <Input onChange={(e) => formik.setFieldValue("application", e.target.value)}/>
+            <Input value={formik.values.application} onChange={(e) => formik.setFieldValue("application", e.target.value)}/>
             <label>Login</label>
-            <Input onChange={(e) => formik.setFieldValue("login_name", e.target.value)}/>
+            <Input value={formik.values.login_name} onChange={(e) => formik.setFieldValue("login_name", e.target.value)}/>
             <label>Password</label>
-            <Input onChange={(e) => formik.setFieldValue("password", e.target.value)}/>
+            <div style={{ position: "relative" }}>
+                <Input value={formik.values.password} onChange={(e) => formik.setFieldValue("password", e.target.value)}/>
+                <Button style={{ position: "absolute", right: 0, top: 0 }} size="x0" onClick={() => {
+                    const id = genPassword(16)
+                    formik.setFieldValue("password", id);
+                }}>
+                    <Shuffle/>
+                </Button>
+            </div>
             <Button disabled={formik.isSubmitting} onClick={() => formik.handleSubmit()}>Speichern</Button>
         </>}
     </Formik>
+}
+// https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
+function genPassword(length: number) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"§$%&/()=?;:_,.-#+*~><|';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * 
+ charactersLength));
+   }
+   return result;
 }
 
 

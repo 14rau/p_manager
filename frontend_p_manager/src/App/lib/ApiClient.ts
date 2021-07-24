@@ -5,7 +5,7 @@ export class ApiClient {
     private instance: AxiosInstance;
     constructor(private app: AppState) {
         this.instance = axios.create({
-            baseURL: 'http://localhost:3001',
+            baseURL: 'http://192.168.2.111:3001',
             timeout: 1000,
             headers: {
                 'session': localStorage.getItem("session"),
